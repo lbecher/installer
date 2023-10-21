@@ -1,15 +1,13 @@
-mod configure_system;
+mod configure;
 mod constants;
 mod dependencies;
-mod install_system;
-mod storage;
+mod install;
 
 use std::process::exit;
 
-use configure_system::*;
+use configure::*;
 use dependencies::*;
-use install_system::*;
-use storage::*;
+use install::*;
 
 fn main() {
     let hostname = get_hostname();
