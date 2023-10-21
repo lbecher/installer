@@ -49,6 +49,14 @@ fn main() {
         }
     }
 
+    match set_extlinux(&storage_device_path) {
+        Ok(()) => println!("O arquivo /boot/extlinux/extlinux.conf foi criado com sucesso."),
+        Err(error) => {
+            eprintln!("ERRO: {}", error);
+            exit(1);
+        }
+    }
+
     match set_hostname(&hostname) {
         Ok(()) => println!("O arquivo /etc/hostname foi criado com sucesso."),
         Err(error) => {
@@ -67,6 +75,14 @@ fn main() {
 
     match set_fstab(&storage_device_path) {
         Ok(()) => println!("O arquivo /etc/fstab foi criado com sucesso."),
+        Err(error) => {
+            eprintln!("ERRO: {}", error);
+            exit(1);
+        }
+    }
+
+    match set_sources_list() {
+        Ok(()) => println!("O arquivo /etc/apt/sources.list foi criado com sucesso."),
         Err(error) => {
             eprintln!("ERRO: {}", error);
             exit(1);

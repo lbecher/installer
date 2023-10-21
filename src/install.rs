@@ -44,7 +44,7 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
     // Atualiza o banco de dados do gerenciador de pacotes do novo sistema
     let output = Command::new("chroot")
         .arg(ROOT_MOUNT_POINT)
-        .arg("/usr/bin/apt")
+        .arg("/bin/apt")
         .arg("update")
         .output()?;
     
@@ -58,7 +58,7 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
     //  Instala pacotes extras no novo sistema
     let output = Command::new("chroot")
         .arg(ROOT_MOUNT_POINT)
-        .arg("/usr/bin/apt")
+        .arg("/bin/apt")
         .arg("install")
         .arg("udev")
         .arg("wget")
