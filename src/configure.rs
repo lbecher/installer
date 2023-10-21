@@ -1,8 +1,6 @@
 use std::fs;
 use std::io;
 use regex::Regex;
-use openssl::hash::hash;
-use openssl::rand::rand_bytes;
 
 use std::process::Command;
 
@@ -116,6 +114,7 @@ pub fn set_root_password(root_password: &str) -> Result<(), std::io::Error>  {
     }
 
     let encrypted_password = String::from_utf8(output.stdout).unwrap();
+    println!("{}", encrypted_password);
 
     // Define a senha do usuário root
     let output = Command::new("usermod")

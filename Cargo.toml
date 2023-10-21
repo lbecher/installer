@@ -10,6 +10,4 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
-openssl = "0.10.57"
-openssl-sys = "0.9.93"
 regex = "1.10.2"
