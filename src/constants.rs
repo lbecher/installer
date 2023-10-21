@@ -1,0 +1,1 @@
+pub const ROOT_MOUNT_POINT: &str = "/mnt/system";
