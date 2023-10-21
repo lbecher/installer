@@ -51,14 +51,6 @@ fn main() {
         }
     }
 
-    match prepare_system() {
-        Ok(()) => println!("O sistema operacional foi preparado para ser usado com sucesso."),
-        Err(error) => {
-            eprintln!("ERRO: {}", error);
-            exit(1);
-        }
-    }
-
     match set_hostname(&hostname) {
         Ok(()) => println!("O arquivo /etc/hostname foi criado com sucesso."),
         Err(error) => {
@@ -85,6 +77,14 @@ fn main() {
 
     match set_root_password(&root_password) {
         Ok(()) => println!("A senha do usuário root foi definida com sucesso."),
+        Err(error) => {
+            eprintln!("ERRO: {}", error);
+            exit(1);
+        }
+    }
+
+    match install_extra_packages() {
+        Ok(()) => println!("Os pacotes extras foram instalados no novo sistema com sucesso."),
         Err(error) => {
             eprintln!("ERRO: {}", error);
             exit(1);
