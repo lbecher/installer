@@ -9,7 +9,7 @@ pub fn install_dependencies() -> Result<(), std::io::Error> {
     if !output.status.success() {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
-            "Falha ao instalar as dependências do instalador!"
+            "Falha ao atualizar a lista de pacotes do APT!"
         ));
     }
 
