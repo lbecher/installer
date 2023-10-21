@@ -1,7 +1,8 @@
 use std::fs;
 use std::io;
 use regex::Regex;
-use md5::*;
+use openssl::hash::hash;
+use openssl::rand::rand_bytes;
 
 use std::process::Command;
 
@@ -101,9 +102,20 @@ pub fn set_fstab(storage_device_path: &str) -> Result<(), std::io::Error>  {
 
 pub fn set_root_password(root_password: &str) -> Result<(), std::io::Error>  {
     // Criptografa a senha do usuário root
-    let hash = compute(root_password);
-    let encrypted_password = format!("{:x}", hash);
-    println!("MD5: {}", encrypted_password);
+    let output = Command::new("openssl")
+        .arg("passwd")
+        .arg("-1")
+        .arg(root_password)
+        .output()?;
+
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao criptografar a senha do usuário root!"
+        ));
+    }
+
+    let encrypted_password = String::from_utf8(output.stdout).unwrap();
 
     // Define a senha do usuário root
     let output = Command::new("usermod")
