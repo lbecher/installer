@@ -1,8 +1,7 @@
 use std::fs;
 use std::io;
 use regex::Regex;
-use crypto::digest::Digest;
-use crypto::sha1::Sha1;
+use md5::*;
 
 use std::process::Command;
 
@@ -102,9 +101,9 @@ pub fn set_fstab(storage_device_path: &str) -> Result<(), std::io::Error>  {
 
 pub fn set_root_password(root_password: &str) -> Result<(), std::io::Error>  {
     // Criptografa a senha do usuário root
-    let mut sha1 = Sha1::new();
-    sha1.input(root_password.as_bytes());
-    let encrypted_password = sha1.result_str();
+    let hash = compute(root_password);
+    let encrypted_password = format!("{:x}", hash);
+    println!("MD5: {}", encrypted_password);
 
     // Define a senha do usuário root
     let output = Command::new("usermod")

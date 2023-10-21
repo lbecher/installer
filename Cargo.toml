@@ -10,5 +10,5 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
+md5 = "0.7.0"
 regex = "1.10.2"
-rust-crypto = "0.2.36"
