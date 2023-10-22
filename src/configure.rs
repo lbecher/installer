@@ -126,14 +126,14 @@ pub fn set_sources_list() -> Result<(), std::io::Error> {
     // Cria o arquivo /etc/apt/sources.list
     let mut sources_list = String::new();
 
-    sources_list += "deb http://deb.debian.org/debian bookworm main non-free non-free-firmware\n";
-    sources_list += "deb-src http://deb.debian.org/debian bookworm main non-free non-free-firmware\n";
+    sources_list += "deb http://debian.c3sl.ufpr.br/debian bookworm main non-free non-free-firmware\n";
+    sources_list += "deb-src http://debian.c3sl.ufpr.br/debian bookworm main non-free non-free-firmware\n";
     sources_list += "\n";
-    sources_list += "deb http://deb.debian.org/debian-security/ bookworm-security main non-free non-free-firmware\n";
-    sources_list += "deb-src http://deb.debian.org/debian-security/ bookworm-security main non-free non-free-firmware\n";
+    sources_list += "deb http://debian.c3sl.ufpr.br/debian-security/ bookworm-security main non-free non-free-firmware\n";
+    sources_list += "deb-src http://debian.c3sl.ufpr.br/debian-security/ bookworm-security main non-free non-free-firmware\n";
     sources_list += "\n";
-    sources_list += "deb http://deb.debian.org/debian bookworm-updates main non-free non-free-firmware\n";
-    sources_list += "deb-src http://deb.debian.org/debian bookworm-updates main non-free non-free-firmware\n";
+    sources_list += "deb http://debian.c3sl.ufpr.br/debian bookworm-updates main non-free non-free-firmware\n";
+    sources_list += "deb-src http://debian.c3sl.ufpr.br/debian bookworm-updates main non-free non-free-firmware\n";
 
     let filepath = format!("{}/etc/apt/sources.list", ROOT_MOUNT_POINT);
 
