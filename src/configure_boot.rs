@@ -168,13 +168,14 @@ pub fn generate_boot_images(
     }
 
     // Gera imagem initrd.img
-    let output = Command::new("update-initramfs")
-        .arg("-c")
+    let output = Command::new("chroot")
+        .arg(ROOT_MOUNT_POINT)
+        .arg("/sbin/update-initramfs")
+        .arg("-c") 
         .arg("-k")
         .arg(kernel_release)
-        .arg("-b")
-        .arg(format!("{}/boot", ROOT_MOUNT_POINT))
         .output()?;
+
     
     if !output.status.success() {
         return Err(std::io::Error::new(
