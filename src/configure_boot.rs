@@ -46,6 +46,32 @@ pub fn copy_boot_files(
     kernel_path: &str,
     kernel_release: &str
 ) -> Result<(), std::io::Error> {
+    // Cria o caminho /boot/dtb-<kernel_release>
+    let output = Command::new("mkdir")
+        .arg("-p")
+        .arg(format!("{}/boot/dtb-{}", ROOT_MOUNT_POINT, kernel_release))
+        .output()?;
+    
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            format!("Falha ao criar o caminho /boot/dtb-{}!", kernel_release)
+        ));
+    }
+
+    // Copia os arquivos DTB
+    let output = Command::new("cp")
+        .arg(format!("{}/arch/arm/boot/dts/*.dtb", kernel_path))
+        .arg(format!("{}/boot/dtb-{}", ROOT_MOUNT_POINT, kernel_release))
+        .output()?;
+
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao copiar os arquivos DTB!"
+        ));
+    }
+
     // Copia o arquivo zImage
     let output = Command::new("cp")
         .arg(format!("{}/arch/arm/boot/zImage", kernel_path))
