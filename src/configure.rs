@@ -30,6 +30,7 @@ pub fn get_kernel_release(
 ) -> Result<String, std::io::Error>  {
     // Obtém versão do kernel
     let output = Command::new("make")
+        .arg("-s")
         .arg("-C")
         .arg(kernel_path)
         .arg("kernelrelease")

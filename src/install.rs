@@ -111,6 +111,7 @@ pub fn install_kernel_modules(
 ) -> Result<(), std::io::Error>  {
     // Instala módulos do kernel
     let output = Command::new("make")
+        .arg("-s")
         .arg("-C")
         .arg(kernel_path)
         .arg(format!("INSTALL_MOD_DIR={}", ROOT_MOUNT_POINT))
