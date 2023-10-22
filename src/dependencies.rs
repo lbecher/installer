@@ -20,6 +20,7 @@ pub fn install_dependencies() -> Result<(), std::io::Error> {
         .arg("e2fsprogs")
         .arg("debootstrap")
         .arg("openssl")
+        .arg("build-essential")
         .arg("-y")
         .output()?;
     

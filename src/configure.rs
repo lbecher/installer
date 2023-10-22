@@ -1,7 +1,6 @@
 use std::fs;
 use std::io;
 use regex::Regex;
-
 use std::process::Command;
 
 use crate::constants::*;
@@ -24,6 +23,30 @@ pub fn get_hostname() -> String {
             println!("Hostname inválido! Tente novamente.");
         }
     }
+}
+
+pub fn get_kernel_release(
+    kernel_path: &str
+) -> Result<String, std::io::Error>  {
+    // Obtém versão do kernel
+    let output = Command::new("make")
+        .arg("-C")
+        .arg(kernel_path)
+        .arg("kernelrelease")
+        .output()?;
+    
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao obter versão do kernel!"
+        ));
+    }
+
+    let kernel_release = String::from_utf8(output.stdout)
+        .unwrap()
+        .replace("\n", "");
+
+    Ok(kernel_release)
 }
 
 pub fn get_root_password() -> String {
@@ -123,43 +146,6 @@ pub fn set_sources_list() -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub fn set_extlinux(storage_device_path: &str) -> Result<(), std::io::Error> {
-    // Cria o caminho /boot/extlinux
-    let output = Command::new("mkdir")
-        .arg("-p")
-        .arg(format!("{}/boot/extlinux", ROOT_MOUNT_POINT).as_str())
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Falha ao criar o caminho /boot/extlinux!"
-        ));
-    }
-
-    // Cria o arquivo /boot/extlinux/extlinux.conf
-    let mut extlinux = String::new();
-
-    extlinux += "LABEL Linux\n";
-    extlinux += "  LINUX ../zImage\n";
-    extlinux += "  INITRD ../initrd.img\n";
-    extlinux += "  FDT ../deviceTreeBinary.dtb\n";
-    extlinux += format!(
-        "  APPEND earlyprintk root={} rootwait rootfstype=ext4 init=/sbin/init\n", 
-        storage_device_path).as_str();
-
-    let filepath = format!("{}/boot/extlinux/extlinux.conf", ROOT_MOUNT_POINT);
-
-    if let Err(_) = fs::write(filepath, extlinux) {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Falha ao criar o arquivo /boot/extlinux/extlinux.conf!"
-        ));
-    }
-
-    Ok(())
-}
-
 pub fn set_root_password(root_password: &str) -> Result<(), std::io::Error>  {
     // Criptografa a senha do usuário root
     let output = Command::new("openssl")
@@ -193,98 +179,6 @@ pub fn set_root_password(root_password: &str) -> Result<(), std::io::Error>  {
         ));
     }
 
-    Ok(())
-}
-
-pub fn config_storage_device(storage_device_path: &str, root_partition_path: &str) -> Result<(), std::io::Error> {
-    // Executa o comando para criar uma tabela de partição MBR
-    let output = Command::new("parted")
-        .arg("--script")
-        .arg(storage_device_path)
-        .arg("mklabel")
-        .arg("msdos")
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Falha ao criar a tabela de partição MBR!"
-        ));
-    }
-    
-    // Executa o comando para criar uma partição raiz
-    let output = Command::new("parted")
-        .arg("--script")
-        .arg(storage_device_path)
-        .arg("mkpart")
-        .arg("primary")
-        .arg("ext4")
-        .arg("0%")
-        .arg("100%")
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other, 
-            "Falha ao criar a partição raiz!"
-        ));
-    }
-
-    // Executa o comando para tornar a partição raiz inicializável
-    let output = Command::new("parted")
-        .arg("--script")
-        .arg(storage_device_path)
-        .arg("set")
-        .arg("1")
-        .arg("boot")
-        .arg("on")
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other, 
-            "Falha ao tornar a partição raiz inicializável!"
-        ));
-    }
-    
-    // Formata a partição raiz com EXT4
-    let output = Command::new("mkfs.ext4")
-        .arg(&root_partition_path)
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Falha ao formatar a partição raiz com EXT4!"
-        ));
-    }
-
-    // Cria o ponto de montagem para a partição raiz
-    let output = Command::new("mkdir")
-        .arg("-p")
-        .arg(ROOT_MOUNT_POINT)
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Falha ao criar o ponto de montagem para a partição raiz!"
-        ));
-    }
-
-    // Monta a partição raiz
-    let output = Command::new("mount")
-        .arg(&root_partition_path)
-        .arg(ROOT_MOUNT_POINT)
-        .output()?;
-    
-    if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "Falha ao montar a partição raiz!"
-        ));
-    }
-    
     Ok(())
 }
 

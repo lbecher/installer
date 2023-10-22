@@ -22,8 +22,8 @@ pub fn create_root_filesystem() -> Result<(), std::io::Error> {
     Ok(())
 }
 
-pub fn prepare_system() -> Result<(), std::io::Error> {
-    // Prepara o sistema operacional para ser usado
+pub fn prepare_root_filesystem() -> Result<(), std::io::Error> {
+    // Prepara o sistema de arquivos da raiz
     let output = Command::new("chroot")
         .arg(ROOT_MOUNT_POINT)
         .arg("/debootstrap/debootstrap")
@@ -33,7 +33,7 @@ pub fn prepare_system() -> Result<(), std::io::Error> {
     if !output.status.success() {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
-            "Falha ao preparar o sistema operacional para ser usado!"
+            "Falha ao preparar o sistema de arquivos da raiz!"
         ));
     }
     
@@ -76,9 +76,9 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
         .arg("tar")
         .arg("zip")
         .arg("unzip")
-        .arg("wayland")
+        .arg("wayland-utils")
         .arg("xwayland")
-        .arg("mesa")
+        .arg("mesa-utils")
         .arg("pipewire")
         .arg("pipewire-alsa")
         .arg("pipewire-jack")
@@ -93,6 +93,27 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Falha ao instalar pacotes extras no novo sistema!"
+        ));
+    }
+
+    Ok(())
+}
+
+pub fn install_kernel_modules(
+    kernel_path: &str
+) -> Result<(), std::io::Error>  {
+    // Instala módulos do kernel
+    let output = Command::new("make")
+        .arg("-C")
+        .arg(kernel_path)
+        .arg(format!("INSTALL_MOD_DIR={}", ROOT_MOUNT_POINT))
+        .arg("modules_install")
+        .output()?;
+    
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao instalar módulos do kernel!"
         ));
     }
 
