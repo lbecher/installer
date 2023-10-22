@@ -85,6 +85,19 @@ pub fn copy_boot_files(
         ));
     }
 
+    // Copia arquivo .config
+    let output = Command::new("cp")
+        .arg(format!("{}/.config", kernel_path))
+        .arg(format!("{}/boot/config-{}", ROOT_MOUNT_POINT, kernel_release))
+        .output()?;
+
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao copiar o arquivo .config!"
+        ));
+    }
+
     // Copia o arquivo System.map
     let output = Command::new("cp")
         .arg(format!("{}/System.map", kernel_path))
