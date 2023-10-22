@@ -10,4 +10,5 @@ opt-level = 1
 opt-level = 3
 
 [dependencies]
+debug_print = "1.0.0"
 regex = "1.10.2"

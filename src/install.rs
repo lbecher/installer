@@ -1,4 +1,5 @@
 use std::process::Command;
+use debug_print::debug_println;
 
 use crate::constants::*;
 
@@ -47,6 +48,8 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
         .arg("/bin/apt")
         .arg("update")
         .output()?;
+
+    debug_println!("{:?}", output);
     
     if !output.status.success() {
         return Err(std::io::Error::new(
@@ -76,6 +79,8 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
         .arg("unzip")
         .arg("-y")
         .output()?;
+
+    debug_println!("{:?}", output);
     
     if !output.status.success() {
         return Err(std::io::Error::new(
