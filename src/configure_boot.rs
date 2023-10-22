@@ -1,4 +1,5 @@
 use std::fs;
+use std::path::Path;
 use std::process::Command;
 
 use crate::constants::*;
@@ -46,29 +47,44 @@ pub fn copy_boot_files(
     kernel_path: &str,
     kernel_release: &str
 ) -> Result<(), std::io::Error> {
+
+    // ARQUIVOS DTB
+
+    let dtb_source_dir = format!("{}/arch/arm/boot/dts", kernel_path);
+    let dtb_destination_dir = format!("{}/boot/dts-{}", ROOT_MOUNT_POINT, kernel_release);
+
     // Cria o caminho /boot/dtb-<kernel_release>
-    let output = Command::new("mkdir")
-        .arg("-p")
-        .arg(format!("{}/boot/dtb-{}", ROOT_MOUNT_POINT, kernel_release))
-        .output()?;
-    
-    if !output.status.success() {
+    if let Err(_) = fs::create_dir_all(dtb_destination_dir.as_str()) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
-            format!("Falha ao criar o caminho /boot/dtb-{}!", kernel_release)
+            "Falha ao criar o diretório de origem dos arquivos DTB!"
         ));
     }
 
-    // Copia os arquivos DTB
-    let output = Command::new("cp")
-        .arg(format!("{}/arch/arm/boot/dts/*.dtb", kernel_path))
-        .arg(format!("{}/boot/dtb-{}", ROOT_MOUNT_POINT, kernel_release))
-        .output()?;
+    // Copia os arquivos DTB para /boot/dtb-<kernel_release>
+    if let Ok(entries) = fs::read_dir(dtb_source_dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                if let Some(extension) = entry.path().extension() {
+                    if extension == "dtb" {
+                        let destination_file = Path::new(
+                            dtb_destination_dir.as_str()
+                        ).join(entry.file_name());
 
-    if !output.status.success() {
+                        if let Err(_) = fs::copy(entry.path(), destination_file) {
+                            return Err(std::io::Error::new(
+                                std::io::ErrorKind::Other,
+                                format!("Falha ao copiar os arquivos DTB para /boot/dtb-{}!", kernel_release)
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    } else {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
-            "Falha ao copiar os arquivos DTB!"
+            "Falha ao ler o diretório de origem dos arquivos DTB!"
         ));
     }
 
