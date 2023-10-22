@@ -51,7 +51,7 @@ pub fn copy_boot_files(
     // ARQUIVOS DTB
 
     let dtb_source_dir = format!("{}/arch/arm/boot/dts", kernel_path);
-    let dtb_destination_dir = format!("{}/boot/dts-{}", ROOT_MOUNT_POINT, kernel_release);
+    let dtb_destination_dir = format!("{}/boot/dtb-{}", ROOT_MOUNT_POINT, kernel_release);
 
     // Cria o caminho /boot/dtb-<kernel_release>
     if let Err(_) = fs::create_dir_all(dtb_destination_dir.as_str()) {
@@ -89,12 +89,14 @@ pub fn copy_boot_files(
     }
 
     // Copia o arquivo zImage
-    let output = Command::new("cp")
-        .arg(format!("{}/arch/arm/boot/zImage", kernel_path))
-        .arg(format!("{}/boot/zImage-{}", ROOT_MOUNT_POINT, kernel_release))
-        .output()?;
+    let destination_file = Path::new(
+        format!("{}/boot", ROOT_MOUNT_POINT).as_str()
+    ).join(format!("zImage-{}", kernel_release));
 
-    if !output.status.success() {
+    if let Err(_) = fs::copy(
+        format!("{}/arch/arm/boot/zImage", kernel_path), 
+        destination_file
+    ) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Falha ao copiar o arquivo zImage!"
@@ -102,12 +104,14 @@ pub fn copy_boot_files(
     }
 
     // Copia arquivo .config
-    let output = Command::new("cp")
-        .arg(format!("{}/.config", kernel_path))
-        .arg(format!("{}/boot/config-{}", ROOT_MOUNT_POINT, kernel_release))
-        .output()?;
+    let destination_file = Path::new(
+        format!("{}/boot", ROOT_MOUNT_POINT).as_str()
+    ).join(format!("config-{}", kernel_release));
 
-    if !output.status.success() {
+    if let Err(_) = fs::copy(
+        format!("{}/.config", kernel_path), 
+        destination_file
+    ) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Falha ao copiar o arquivo .config!"
@@ -115,12 +119,14 @@ pub fn copy_boot_files(
     }
 
     // Copia o arquivo System.map
-    let output = Command::new("cp")
-        .arg(format!("{}/System.map", kernel_path))
-        .arg(format!("{}/boot/System.map-{}", ROOT_MOUNT_POINT, kernel_release))
-        .output()?;
+    let destination_file = Path::new(
+        format!("{}/boot", ROOT_MOUNT_POINT).as_str()
+    ).join(format!("System.map-{}", kernel_release));
 
-    if !output.status.success() {
+    if let Err(_) = fs::copy(
+        format!("{}/System.map", kernel_path), 
+        destination_file
+    ) {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Falha ao copiar o arquivo System.map!"
