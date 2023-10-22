@@ -71,7 +71,7 @@ fn main() {
     let root_partition_path = format!("{}p1", storage_device_path);
 
 
-    /* INSTALA DEPENDÊNCIAS DO INSTALADOR */
+    // INSTALA DEPENDÊNCIAS DO INSTALADOR
 
     match install_dependencies() {
         Ok(()) => println!("As dependências do instalador foram instaladas com sucesso."),
@@ -82,7 +82,7 @@ fn main() {
     }
 
 
-    /* CONFIGURA ARMAZENAMENTO */
+    // CONFIGURA ARMAZENAMENTO
 
     match configure_storage(storage_device_path, &root_partition_path) {
         Ok(()) => println!("O dispositivo de armazenamento foi formatado com sucesso."),
@@ -93,7 +93,7 @@ fn main() {
     }
 
 
-    /* INSTALA O SISTEMA */
+    // INSTALA O SISTEMA
 
     match create_root_filesystem() {
         Ok(()) => println!("O sistema de arquivos da raiz foi criado com sucesso."),
@@ -120,7 +120,7 @@ fn main() {
     }
 
 
-    /* CONFIGURA O SISTEMA */
+    // CONFIGURA O SISTEMA
 
     match create_extlinux_configuration_file(&storage_device_path) {
         Ok(()) => println!("O arquivo /boot/extlinux/extlinux.conf foi criado com sucesso."),
@@ -171,7 +171,7 @@ fn main() {
     }
 
 
-    /* INSTALA PACOTES EXTRAS */
+    // INSTALA PACOTES EXTRAS
 
     match install_extra_packages() {
         Ok(()) => println!("Os pacotes extras foram instalados no novo sistema com sucesso."),
@@ -182,18 +182,10 @@ fn main() {
     }
 
 
-    /* CONFIGURA O BOOT */
+    // CONFIGURA O BOOT
 
     match copy_boot_files(kernel_path, kernel_release) {
         Ok(()) => println!("Os arquivos de boot foram copiados com sucesso."),
-        Err(error) => {
-            eprintln!("ERRO: {}", error);
-            exit(1);
-        }
-    }
-
-    match generate_boot_images(kernel_release) {
-        Ok(()) => println!("As imagens de boot foram geradas com sucesso."),
         Err(error) => {
             eprintln!("ERRO: {}", error);
             exit(1);
@@ -217,7 +209,7 @@ fn main() {
     }
 
 
-    /* FINALIZA INSTALAÇÃO */
+    // FINALIZA INSTALAÇÃO
     
     match umount_root_partition() {
         Ok(()) => println!("O dispositivo de armazenamento foi desmontado com sucesso."),
