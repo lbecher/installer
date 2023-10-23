@@ -53,7 +53,7 @@ fn main() {
     let release: String;
     match get_kernel_release(&kernel_path) {
         Ok(kernel_release) => {
-            println!("As dependências do instalador foram instaladas com sucesso.");
+            println!("A versão do kernel foi obtida com sucesso.");
             release = kernel_release;
         },
         Err(error) => {
@@ -201,7 +201,7 @@ fn main() {
     }
 
     match create_boot_symbolic_links(kernel_release, dtb_file) {
-        Ok(()) => println!("O dispositivo de armazenamento foi desmontado com sucesso."),
+        Ok(()) => println!("Os links simbólicos foram criados com sucesso."),
         Err(error) => {
             eprintln!("ERRO: {}", error);
             exit(1);
