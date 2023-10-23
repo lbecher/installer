@@ -28,7 +28,7 @@ pub fn create_extlinux_configuration_file(
     extlinux += "  INITRD ../initrd.img\n";
     extlinux += "  FDT ../device_tree_binary.dtb\n";
     extlinux += format!(
-        "  APPEND earlyprintk root={} rootwait rootfstype=ext4 init=/sbin/init\n", 
+        "  APPEND earlyprintk root={} rootwait rootfstype=ext4 init=/sbin/init loglevel=0\n", 
         root_partition_path).as_str();
 
     let filepath = format!("{}/boot/extlinux/extlinux.conf", ROOT_MOUNT_POINT);

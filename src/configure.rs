@@ -18,7 +18,7 @@ pub fn get_hostname() -> String {
         hostname = hostname.trim().to_string();
 
         if regex.is_match(&hostname) {
-            return hostname;
+            return hostname.replace("\n", "");
         } else {
             println!("Hostname inválido! Tente novamente.");
         }
@@ -69,7 +69,7 @@ pub fn get_root_password() -> String {
         }
     }
 
-    password
+    password.replace("\n", "")
 }
 
 pub fn set_hostname(hostname: &str) -> Result<(), std::io::Error>  {
