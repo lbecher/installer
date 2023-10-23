@@ -31,10 +31,10 @@ fn main() {
 
     // Verifica se o número de argumentos está correto
     if args.len() != 4 {
-        eprintln!("Uso: {} <emmc> <kernel> <dtb>\n\nOnde:\n", args[0]);
-        eprintln!("  <emmc>:   Caminho para dispositivo eMMC.\n            Exemplo: /dev/mmcblk0\n");
-        eprintln!("  <kernel>: Caminho para o diretório do kernel Linux compilado.\n            Exemplo: /mnt/pendrive/linux-6.1.57\n");
-        eprintln!("  <dtb>:    Nome do arquivo em <kernel>/arch/arm/boot/dts que deve ser usado pelo kernel.\n            Exemplo: rk322x-box.dtb\n");
+        eprintln!("\nUso: {} <emmc> <kernel> <dtb>\n\nOnde:\n", args[0]);
+        eprintln!("  <emmc>    Caminho para dispositivo eMMC.\n            Exemplo: /dev/mmcblk0\n");
+        eprintln!("  <kernel>  Caminho para o diretório do kernel Linux compilado.\n            Exemplo: /mnt/pendrive/linux-6.1.57\n");
+        eprintln!("  <dtb>     Nome do arquivo em <kernel>/arch/arm/boot/dts que deve ser usado pelo kernel.\n            Exemplo: rk322x-box.dtb\n");
         exit(1);
     }
 
