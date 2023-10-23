@@ -122,7 +122,7 @@ fn main() {
 
     // CONFIGURA O SISTEMA
 
-    match create_extlinux_configuration_file(&storage_device_path) {
+    match create_extlinux_configuration_file(&root_partition_path) {
         Ok(()) => println!("O arquivo /boot/extlinux/extlinux.conf foi criado com sucesso."),
         Err(error) => {
             eprintln!("ERRO: {}", error);

@@ -5,7 +5,7 @@ use std::process::Command;
 use crate::constants::*;
 
 pub fn create_extlinux_configuration_file(
-    storage_device_path: &str
+    root_partition_path: &str
 ) -> Result<(), std::io::Error> {
     // Cria o caminho /boot/extlinux
     let output = Command::new("mkdir")
@@ -29,7 +29,7 @@ pub fn create_extlinux_configuration_file(
     extlinux += "  FDT ../device_tree_binary.dtb\n";
     extlinux += format!(
         "  APPEND earlyprintk root={} rootwait rootfstype=ext4 init=/sbin/init\n", 
-        storage_device_path).as_str();
+        root_partition_path).as_str();
 
     let filepath = format!("{}/boot/extlinux/extlinux.conf", ROOT_MOUNT_POINT);
 
