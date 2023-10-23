@@ -1,5 +1,4 @@
 use std::process::Command;
-use debug_print::debug_println;
 
 use crate::constants::*;
 
@@ -48,8 +47,6 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
         .arg("/bin/apt")
         .arg("update")
         .output()?;
-
-    debug_println!("{:?}", output);
     
     if !output.status.success() {
         return Err(std::io::Error::new(
@@ -79,13 +76,41 @@ pub fn install_extra_packages() -> Result<(), std::io::Error> {
         .arg("unzip")
         .arg("-y")
         .output()?;
-
-    debug_println!("{:?}", output);
     
     if !output.status.success() {
         return Err(std::io::Error::new(
             std::io::ErrorKind::Other,
             "Falha ao instalar pacotes extras no novo sistema!"
+        ));
+    }
+
+    // Habilita o NetworkManager
+    let output = Command::new("chroot")
+        .arg(ROOT_MOUNT_POINT)
+        .arg("/bin/systemctl")
+        .arg("enable")
+        .arg("NetworkManager")
+        .output()?;
+    
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao habilitar o NetworkManager!"
+        ));
+    }
+
+    // Habilita o SSH
+    let output = Command::new("chroot")
+        .arg(ROOT_MOUNT_POINT)
+        .arg("/bin/systemctl")
+        .arg("enable")
+        .arg("ssh")
+        .output()?;
+    
+    if !output.status.success() {
+        return Err(std::io::Error::new(
+            std::io::ErrorKind::Other,
+            "Falha ao habilitar o SSH!"
         ));
     }
 
